@@ -8,6 +8,9 @@ router.use((req, res, next) => {
         req.flash('error', 'Anda harus login terlebih dahulu');
         return res.redirect('/auth/login');
     }
+
+    // Debug middleware
+    console.log(`User route accessed: ${req.method} ${req.path}`);
     next();
 });
 
@@ -102,57 +105,9 @@ router.post('/change-password', async (req, res) => {
     }
 });
 
-// Riwayat setoran
-router.get('/setoran', (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-
-        // Ambil setoran dari session (simulasi database)
-        const setoran = req.session.userSetoran || [];
-        const total = setoran.length;
-        const totalPages = Math.ceil(total / limit);
-
-        res.render('user/setoran', {
-            title: 'Riwayat Setoran',
-            user: req.session.user,
-            setoran,
-            pagination: {
-                page,
-                limit,
-                total,
-                totalPages
-            },
-            error: req.flash('error'),
-            success: req.flash('success')
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        req.flash('error', 'Terjadi kesalahan saat mengambil data setoran');
-        res.redirect('/user/dashboard');
-    }
-});
-
-// Detail setoran
-router.get('/setoran/:id', (req, res) => {
-    const setoranId = req.params.id;
-
-    // Cari setoran berdasarkan ID dari session
-    const userSetoran = req.session.userSetoran || [];
-    const setoran = userSetoran.find(s => s.id.toString() === setoranId);
-
-    res.render('user/setoran-detail', {
-        title: 'Detail Setoran',
-        user: req.session.user,
-        setoran: setoran || null,
-        items: setoran ? setoran.items : [],
-        error: req.flash('error'),
-        success: req.flash('success')
-    });
-});
-
-// Form tambah setoran
+// Form tambah setoran (harus sebelum route :id)
 router.get('/setoran/create', (req, res) => {
+    console.log('Accessing /user/setoran/create route'); // Debug log
     res.render('user/create-setoran', {
         title: 'Tambah Setoran',
         user: req.session.user,
@@ -232,6 +187,55 @@ router.post('/setoran/create', async (req, res) => {
         req.flash('error', 'Terjadi kesalahan saat membuat setoran');
         res.redirect('/user/setoran/create');
     }
+});
+
+// Riwayat setoran
+router.get('/setoran', (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        // Ambil setoran dari session (simulasi database)
+        const setoran = req.session.userSetoran || [];
+        const total = setoran.length;
+        const totalPages = Math.ceil(total / limit);
+
+        res.render('user/setoran', {
+            title: 'Riwayat Setoran',
+            user: req.session.user,
+            setoran,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages
+            },
+            error: req.flash('error'),
+            success: req.flash('success')
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        req.flash('error', 'Terjadi kesalahan saat mengambil data setoran');
+        res.redirect('/user/dashboard');
+    }
+});
+
+// Detail setoran (harus setelah route /setoran/create)
+router.get('/setoran/:id', (req, res) => {
+    const setoranId = req.params.id;
+
+    // Cari setoran berdasarkan ID dari session
+    const userSetoran = req.session.userSetoran || [];
+    const setoran = userSetoran.find(s => s.id.toString() === setoranId);
+
+    res.render('user/setoran-detail', {
+        title: 'Detail Setoran',
+        user: req.session.user,
+        setoran: setoran || null,
+        items: setoran ? setoran.items : [],
+        error: req.flash('error'),
+        success: req.flash('success')
+    });
 });
 
 module.exports = router;

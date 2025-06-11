@@ -32,12 +32,23 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "cdn.jsdelivr.net"],
-            styleSrc: ["'self'", "'unsafe-inline'", "cdn.jsdelivr.net"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "cdn.jsdelivr.net", "cdnjs.cloudflare.com"],
+            styleSrc: ["'self'", "'unsafe-inline'", "cdn.jsdelivr.net", "cdnjs.cloudflare.com"],
             imgSrc: ["'self'", "data:", "cdn.jsdelivr.net", "via.placeholder.com"],
-            fontSrc: ["'self'", "cdn.jsdelivr.net"]
+            fontSrc: ["'self'", "cdn.jsdelivr.net", "cdnjs.cloudflare.com"],
+            connectSrc: ["'self'"]
         }
-    }
+    },
+    crossOriginEmbedderPolicy: false, // Disable untuk kompatibilitas
+    frameguard: { action: 'deny' }, // X-Frame-Options: DENY
+    hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true
+    },
+    noSniff: true, // X-Content-Type-Options: nosniff
+    xssFilter: true, // X-XSS-Protection: 1; mode=block
+    referrerPolicy: { policy: "same-origin" }
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

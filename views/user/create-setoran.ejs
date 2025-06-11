@@ -23,7 +23,7 @@
                 <label class="form-label">Jenis Sampah</label>
                 <select
                   class="form-select sampah-select"
-                  name="sampah_id[0]"
+                  name="sampah_id"
                   required
                 >
                   <option value="" selected disabled>Pilih jenis sampah</option>
@@ -47,7 +47,7 @@
                 <input
                   type="number"
                   class="form-control berat-input"
-                  name="berat[0]"
+                  name="berat"
                   step="0.1"
                   min="0.1"
                   required
@@ -60,7 +60,7 @@
                 <input
                   type="number"
                   class="form-control harga-satuan"
-                  name="harga_satuan[0]"
+                  name="harga_satuan"
                   readonly
                   value="2500"
                 />
@@ -71,7 +71,7 @@
                 <input
                   type="number"
                   class="form-control item-total"
-                  name="item_total[0]"
+                  name="item_total"
                   readonly
                   value="2500"
                 />
@@ -131,6 +131,7 @@
                 </table>
               </div>
             </div>
+
             <input
               type="hidden"
               id="totalHargaInput"
@@ -171,9 +172,11 @@
         const beratInput = newItem.querySelector(".berat-input");
         beratInput.name = `berat[${newIndex}]`;
         beratInput.value = "1";
+
         const hargaInput = newItem.querySelector(".harga-satuan");
         hargaInput.name = `harga_satuan[${newIndex}]`;
         hargaInput.value = "2500";
+
         const totalInput = newItem.querySelector(".item-total");
         totalInput.name = `item_total[${newIndex}]`;
         totalInput.value = "2500";
@@ -188,7 +191,9 @@
         itemCount++;
 
         updateSummary();
-      }); // Fungsi untuk event listeners pada item
+      });
+
+    // Fungsi untuk event listeners pada item
     function addItemEventListeners(item) {
       const sampahSelect = item.querySelector(".sampah-select");
       const beratInput = item.querySelector(".berat-input");
@@ -234,7 +239,7 @@
       let totalBerat = 0;
       let totalPembayaran = 0;
 
-      items.forEach((item) => {
+      items.forEach(function (item) {
         const berat = parseFloat(item.querySelector(".berat-input").value) || 0;
         const harga =
           parseFloat(item.querySelector(".harga-satuan").value) || 0;

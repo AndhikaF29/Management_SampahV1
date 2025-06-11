@@ -12,16 +12,64 @@ Aplikasi web untuk manajemen sampah dengan fokus pada keamanan level aplikasi. D
 
 ## Fokus Keamanan
 
-Aplikasi ini menerapkan berbagai teknik keamanan pada level aplikasi:
+Aplikasi ini menerapkan berbagai teknik keamanan pada level aplikasi dengan pendekatan berlapis (Defense in Depth):
 
-- Password encryption dengan bcrypt
-- CSRF protection
-- XSS prevention
-- SQL injection prevention
-- Rate limiting
-- Secure cookies
-- Content Security Policy
-- Validasi input yang ketat
+### 1. Authentication & Authorization Layer
+
+- **Password Encryption**: Menggunakan bcrypt untuk hashing password dengan salt
+- **Session Management**: Secure session dengan konfigurasi httpOnly dan secure cookies
+- **Role-based Access Control**: Pembatasan akses berdasarkan role (admin/user)
+- **Authentication Middleware**: Validasi login status di setiap protected route
+
+### 2. Input Validation & Sanitization Layer
+
+- **XSS Prevention**: Menggunakan xss-clean middleware untuk sanitasi input
+- **CSRF Protection**: Token CSRF untuk mencegah Cross-Site Request Forgery
+- **Input Validation**: Validasi server-side untuk semua form input
+- **SQL Injection Prevention**: Menggunakan prepared statements dan parameterized queries
+
+### 3. HTTP Security Headers Layer
+
+- **Helmet.js**: Mengatur security headers seperti:
+  - Content Security Policy (CSP)
+  - X-Frame-Options (mencegah clickjacking)
+  - X-Content-Type-Options (mencegah MIME type sniffing)
+  - X-XSS-Protection
+  - Strict-Transport-Security (HTTPS enforcement)
+
+### 4. Rate Limiting & DoS Protection Layer
+
+- **Express Rate Limit**: Pembatasan request per IP untuk mencegah brute force
+- **Request Size Limiting**: Pembatasan ukuran request body
+- **Timeout Configuration**: Timeout untuk request yang terlalu lama
+
+### 5. Session Security Layer
+
+- **Secure Session Configuration**:
+  - httpOnly: true (mencegah akses via JavaScript)
+  - secure: true (hanya melalui HTTPS di production)
+  - maxAge: Expired session otomatis
+  - SameSite protection
+- **Session Secret**: Environment variable untuk signing session
+
+### 6. Content Security Policy (CSP) Layer
+
+- **Script Source Control**: Hanya mengizinkan script dari domain tertentu
+- **Style Source Control**: Pembatasan sumber CSS
+- **Image Source Control**: Validasi sumber gambar
+- **Font Source Control**: Pembatasan sumber font
+
+### 7. Error Handling & Information Disclosure Prevention
+
+- **Custom Error Pages**: Tidak menampilkan stack trace di production
+- **Graceful Error Handling**: Error handling yang aman tanpa bocorkan informasi sensitif
+- **Log Security**: Logging yang aman tanpa mencatat data sensitif
+
+### 8. Environment & Configuration Security
+
+- **Environment Variables**: Konfigurasi sensitif disimpan di .env
+- **Secret Management**: API keys dan secrets tidak di-hardcode
+- **Development vs Production**: Konfigurasi berbeda untuk setiap environment
 
 ## Prasyarat
 
@@ -77,6 +125,15 @@ npm start
 ```
 
 8. Buka aplikasi di browser: `http://localhost:3000`
+
+## Fitur Progressive Web App (PWA)
+
+Aplikasi ini sudah dilengkapi dengan service worker dasar (`sw.js`) yang memungkinkan pengembangan fitur PWA di masa depan seperti:
+
+- Offline functionality
+- Push notifications
+- Background sync
+- Caching strategies
 
 ## Default Users
 
