@@ -87,6 +87,11 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/admin', adminRoutes);
 
+// Route khusus untuk service worker
+app.get('/sw.js', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'sw.js'));
+});
+
 // Error handling
 app.use(errorHandler.notFound);
 app.use(errorHandler.errorHandler);

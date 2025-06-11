@@ -26,10 +26,19 @@
                   name="sampah_id[0]"
                   required
                 >
-                  <option value="" selected disabled>Pilih jenis sampah</option>                  <option value="1" data-harga="2500">Sampah Plastik - Botol (Rp 2,500/kg)</option>
-                  <option value="2" data-harga="3000">Sampah Kertas - Kardus (Rp 3,000/kg)</option>
-                  <option value="3" data-harga="1800">Sampah Organik - Daun (Rp 1,800/kg)</option>
-                  <option value="4" data-harga="10000">Sampah Logam - Kaleng (Rp 10,000/kg)</option>
+                  <option value="" selected disabled>Pilih jenis sampah</option>
+                  <option value="1" data-harga="2500">
+                    Sampah Plastik - Botol (Rp 2,500/kg)
+                  </option>
+                  <option value="2" data-harga="3000">
+                    Sampah Kertas - Kardus (Rp 3,000/kg)
+                  </option>
+                  <option value="3" data-harga="1800">
+                    Sampah Organik - Daun (Rp 1,800/kg)
+                  </option>
+                  <option value="4" data-harga="10000">
+                    Sampah Logam - Kaleng (Rp 10,000/kg)
+                  </option>
                 </select>
               </div>
 
@@ -47,7 +56,8 @@
               </div>
 
               <div class="col-md-2">
-                <label class="form-label">Harga/kg</label>                <input
+                <label class="form-label">Harga/kg</label>
+                <input
                   type="number"
                   class="form-control harga-satuan"
                   name="harga_satuan[0]"
@@ -57,7 +67,8 @@
               </div>
 
               <div class="col-md-3">
-                <label class="form-label">Total</label>                <input
+                <label class="form-label">Total</label>
+                <input
                   type="number"
                   class="form-control item-total"
                   name="item_total[0]"
@@ -119,7 +130,8 @@
                   </tr>
                 </table>
               </div>
-            </div>            <input
+            </div>
+            <input
               type="hidden"
               id="totalHargaInput"
               name="total_harga"
@@ -158,9 +170,11 @@
 
         const beratInput = newItem.querySelector(".berat-input");
         beratInput.name = `berat[${newIndex}]`;
-        beratInput.value = "1";        const hargaInput = newItem.querySelector(".harga-satuan");
+        beratInput.value = "1";
+        const hargaInput = newItem.querySelector(".harga-satuan");
         hargaInput.name = `harga_satuan[${newIndex}]`;
-        hargaInput.value = "2500";        const totalInput = newItem.querySelector(".item-total");
+        hargaInput.value = "2500";
+        const totalInput = newItem.querySelector(".item-total");
         totalInput.name = `item_total[${newIndex}]`;
         totalInput.value = "2500";
 
@@ -174,7 +188,7 @@
         itemCount++;
 
         updateSummary();
-      });    // Fungsi untuk event listeners pada item
+      }); // Fungsi untuk event listeners pada item
     function addItemEventListeners(item) {
       const sampahSelect = item.querySelector(".sampah-select");
       const beratInput = item.querySelector(".berat-input");

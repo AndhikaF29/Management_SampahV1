@@ -107,12 +107,12 @@ router.get('/setoran', (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
-        
+
         // Ambil setoran dari session (simulasi database)
         const setoran = req.session.userSetoran || [];
         const total = setoran.length;
         const totalPages = Math.ceil(total / limit);
-        
+
         res.render('user/setoran', {
             title: 'Riwayat Setoran',
             user: req.session.user,
@@ -136,11 +136,11 @@ router.get('/setoran', (req, res) => {
 // Detail setoran
 router.get('/setoran/:id', (req, res) => {
     const setoranId = req.params.id;
-    
+
     // Cari setoran berdasarkan ID dari session
     const userSetoran = req.session.userSetoran || [];
     const setoran = userSetoran.find(s => s.id.toString() === setoranId);
-    
+
     res.render('user/setoran-detail', {
         title: 'Detail Setoran',
         user: req.session.user,
@@ -166,25 +166,25 @@ router.get('/setoran/create', (req, res) => {
 router.post('/setoran/create', async (req, res) => {
     try {
         const { sampah_id, berat, harga_satuan, item_total, total_harga } = req.body;
-        
+
         console.log('Data setoran diterima:', req.body); // Debug log
-        
+
         // Validasi input
         if (!total_harga || total_harga <= 0) {
             req.flash('error', 'Total harga tidak valid');
             return res.redirect('/user/setoran/create');
         }
-        
+
         if (!sampah_id || !berat || !harga_satuan) {
             req.flash('error', 'Semua field harus diisi dengan benar');
             return res.redirect('/user/setoran/create');
         }
-        
+
         // Simulasi penyimpanan ke "database" menggunakan session untuk demo
         if (!req.session.userSetoran) {
             req.session.userSetoran = [];
         }
-        
+
         const newSetoran = {
             id: Date.now(), // ID sederhana untuk demo
             user_id: req.session.user.id,
@@ -194,7 +194,7 @@ router.post('/setoran/create', async (req, res) => {
             status: 'menunggu',
             items: []
         };
-        
+
         // Proses item setoran
         if (Array.isArray(sampah_id)) {
             // Multiple items
@@ -221,12 +221,12 @@ router.post('/setoran/create', async (req, res) => {
                 total: parseFloat(item_total)
             });
         }
-        
+
         req.session.userSetoran.push(newSetoran);
-        
+
         req.flash('success', 'Setoran berhasil dibuat dan menunggu verifikasi admin');
         res.redirect('/user/setoran');
-        
+
     } catch (error) {
         console.error('Error creating setoran:', error);
         req.flash('error', 'Terjadi kesalahan saat membuat setoran');
