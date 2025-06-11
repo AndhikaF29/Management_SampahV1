@@ -1,0 +1,182 @@
+<%- contentFor('body') %>
+
+<div class="container py-4">
+  <h1 class="mb-4">Manajemen User</h1>
+
+  <div class="card">
+    <div
+      class="card-header bg-white d-flex justify-content-between align-items-center"
+    >
+      <div class="d-flex align-items-center">
+        <h5 class="mb-0">Daftar User</h5>
+      </div>
+      <form class="d-flex" action="/admin/users" method="GET">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Cari nama atau email..."
+            name="search"
+            value="<%= search %>"
+          />
+          <button class="btn btn-outline-success" type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nama</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Terdaftar</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (users && users.length > 0) { %> <% users.forEach(user => { %>
+            <tr>
+              <td><%= user.id %></td>
+              <td><%= user.nama %></td>
+              <td><%= user.email %></td>
+              <td>
+                <% if (user.role === 'admin') { %>
+                <span class="badge bg-danger">Admin</span>
+                <% } else { %>
+                <span class="badge bg-primary">User</span>
+                <% } %>
+              </td>
+              <td>
+                <%= new Date(user.created_at).toLocaleDateString('id-ID', {day:
+                'numeric', month: 'long', year: 'numeric'}) %>
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <a
+                    href="/admin/users/<%= user.id %>"
+                    class="btn btn-outline-primary"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </a>
+                  <a
+                    href="/admin/users/<%= user.id %>/delete"
+                    class="btn btn-outline-danger delete-btn"
+                    data-user-id="<%= user.id %>"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <% }); %> <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center py-4">
+                <div class="mb-3">
+                  <i class="fas fa-users fa-3x text-muted"></i>
+                </div>
+                <h5>Belum ada data user</h5>
+                <p class="text-muted mb-0">
+                  Atau tidak ada user yang sesuai dengan pencarian.
+                </p>
+              </td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <% if (pagination && pagination.totalPages > 1) { %>
+      <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item <%= pagination.page <= 1 ? 'disabled' : '' %>">
+            <a
+              class="page-link"
+              href="/admin/users?page=<%= pagination.page - 1 %><%= search ? '&search=' + search : '' %>"
+              >Sebelumnya</a
+            >
+          </li>
+
+          <% for(let i = 1; i <= pagination.totalPages; i++) { %>
+          <li class="page-item <%= pagination.page == i ? 'active' : '' %>">
+            <a
+              class="page-link"
+              href="/admin/users?page=<%= i %><%= search ? '&search=' + search : '' %>"
+              ><%= i %></a
+            >
+          </li>
+          <% } %>
+
+          <li
+            class="page-item <%= pagination.page >= pagination.totalPages ? 'disabled' : '' %>"
+          >
+            <a
+              class="page-link"
+              href="/admin/users?page=<%= pagination.page + 1 %><%= search ? '&search=' + search : '' %>"
+              >Selanjutnya</a
+            >
+          </li>
+        </ul>
+      </nav>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Hapus User</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Apakah Anda yakin ingin menghapus user ini? Tindakan ini tidak dapat
+          dibatalkan.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Batal
+        </button>
+        <a href="#" id="confirmDeleteButton" class="btn btn-danger"
+          >Hapus User</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Tangkap semua tombol delete
+    const deleteButtons = document.querySelectorAll(".delete-btn");
+
+    deleteButtons.forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+        const userId = this.getAttribute("data-user-id");
+        const deleteUrl = this.getAttribute("href");
+
+        const modal = new bootstrap.Modal(
+          document.getElementById("deleteModal")
+        );
+        const confirmButton = document.getElementById("confirmDeleteButton");
+        confirmButton.href = deleteUrl;
+        modal.show();
+      });
+    });
+  });
+</script>

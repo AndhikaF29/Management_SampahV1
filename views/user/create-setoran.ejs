@@ -1,0 +1,239 @@
+<%- contentFor('body') %>
+
+<div class="container py-4">
+  <div class="mb-4">
+    <a href="/user/setoran" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left me-1"></i> Kembali
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-header bg-white">
+      <h5 class="mb-0">Tambah Setoran Baru</h5>
+    </div>
+    <div class="card-body">
+      <form id="setoranForm" action="/user/setoran/create" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+        <div id="itemContainer">
+          <!-- Template untuk item setoran -->
+          <div class="setoran-item border rounded p-3 mb-3">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">Jenis Sampah</label>
+                <select
+                  class="form-select sampah-select"
+                  name="sampah_id[0]"
+                  required
+                >
+                  <option value="" selected disabled>Pilih jenis sampah</option>                  <option value="1" data-harga="2500">Sampah Plastik - Botol (Rp 2,500/kg)</option>
+                  <option value="2" data-harga="3000">Sampah Kertas - Kardus (Rp 3,000/kg)</option>
+                  <option value="3" data-harga="1800">Sampah Organik - Daun (Rp 1,800/kg)</option>
+                  <option value="4" data-harga="10000">Sampah Logam - Kaleng (Rp 10,000/kg)</option>
+                </select>
+              </div>
+
+              <div class="col-md-2">
+                <label class="form-label">Berat (kg)</label>
+                <input
+                  type="number"
+                  class="form-control berat-input"
+                  name="berat[0]"
+                  step="0.1"
+                  min="0.1"
+                  required
+                  value="1"
+                />
+              </div>
+
+              <div class="col-md-2">
+                <label class="form-label">Harga/kg</label>                <input
+                  type="number"
+                  class="form-control harga-satuan"
+                  name="harga_satuan[0]"
+                  readonly
+                  value="2500"
+                />
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">Total</label>                <input
+                  type="number"
+                  class="form-control item-total"
+                  name="item_total[0]"
+                  readonly
+                  value="2500"
+                />
+              </div>
+
+              <div class="col-md-1 d-flex align-items-end">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger remove-item"
+                  style="display: none"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- End template -->
+        </div>
+
+        <div class="mb-3">
+          <button
+            type="button"
+            id="addItemBtn"
+            class="btn btn-sm btn-outline-primary"
+          >
+            <i class="fas fa-plus-circle me-1"></i> Tambah Item
+          </button>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <div class="alert alert-light border">
+              <h6><i class="fas fa-info-circle me-1"></i> Informasi</h6>
+              <p class="mb-0">
+                Pastikan data yang Anda masukkan sudah benar. Setelah dikirim,
+                data setoran akan diverifikasi oleh admin.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h5 class="card-title">Ringkasan</h5>
+                <table class="table table-borderless mb-0">
+                  <tr>
+                    <th>Total Item</th>
+                    <td><span id="totalItems">1</span> item</td>
+                  </tr>
+                  <tr>
+                    <th>Total Berat</th>
+                    <td><span id="totalBerat">1</span> kg</td>
+                  </tr>
+                  <tr class="border-top">
+                    <th>Total Pembayaran</th>
+                    <td>Rp <span id="totalPembayaran">2,500</span></td>
+                  </tr>
+                </table>
+              </div>
+            </div>            <input
+              type="hidden"
+              id="totalHargaInput"
+              name="total_harga"
+              value="2500"
+            />
+
+            <div class="d-grid gap-2 mt-3">
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-paper-plane me-1"></i> Kirim Setoran
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let itemCount = 1;
+
+    // Fungsi untuk menambahkan item baru
+    document
+      .getElementById("addItemBtn")
+      .addEventListener("click", function () {
+        const container = document.getElementById("itemContainer");
+        const newItem = container.children[0].cloneNode(true);
+
+        // Update nama field dengan index baru
+        const newIndex = itemCount;
+
+        const sampahSelect = newItem.querySelector(".sampah-select");
+        sampahSelect.name = `sampah_id[${newIndex}]`;
+        sampahSelect.value = "";
+
+        const beratInput = newItem.querySelector(".berat-input");
+        beratInput.name = `berat[${newIndex}]`;
+        beratInput.value = "1";        const hargaInput = newItem.querySelector(".harga-satuan");
+        hargaInput.name = `harga_satuan[${newIndex}]`;
+        hargaInput.value = "2500";        const totalInput = newItem.querySelector(".item-total");
+        totalInput.name = `item_total[${newIndex}]`;
+        totalInput.value = "2500";
+
+        // Show remove button
+        newItem.querySelector(".remove-item").style.display = "block";
+
+        // Add event listeners for new item
+        addItemEventListeners(newItem);
+
+        container.appendChild(newItem);
+        itemCount++;
+
+        updateSummary();
+      });    // Fungsi untuk event listeners pada item
+    function addItemEventListeners(item) {
+      const sampahSelect = item.querySelector(".sampah-select");
+      const beratInput = item.querySelector(".berat-input");
+      const hargaInput = item.querySelector(".harga-satuan");
+      const totalInput = item.querySelector(".item-total");
+
+      // Update harga when sampah type changes
+      sampahSelect.addEventListener("change", function () {
+        const selectedOption = this.options[this.selectedIndex];
+        const harga = selectedOption.getAttribute("data-harga");
+        if (harga) {
+          hargaInput.value = harga;
+          totalInput.value = (
+            parseFloat(beratInput.value) * parseFloat(harga)
+          ).toFixed(0);
+          updateSummary();
+        }
+      });
+
+      // Update total when berat changes
+      beratInput.addEventListener("input", function () {
+        totalInput.value = (
+          parseFloat(beratInput.value) * parseFloat(hargaInput.value)
+        ).toFixed(0);
+        updateSummary();
+      });
+
+      // Remove item
+      item.querySelector(".remove-item").addEventListener("click", function () {
+        item.remove();
+        updateSummary();
+      });
+    }
+
+    // Add event listeners to initial item
+    addItemEventListeners(document.querySelector(".setoran-item"));
+
+    // Update summary information
+    function updateSummary() {
+      const items = document.querySelectorAll(".setoran-item");
+      const totalItems = items.length;
+
+      let totalBerat = 0;
+      let totalPembayaran = 0;
+
+      items.forEach((item) => {
+        const berat = parseFloat(item.querySelector(".berat-input").value) || 0;
+        const harga =
+          parseFloat(item.querySelector(".harga-satuan").value) || 0;
+
+        totalBerat += berat;
+        totalPembayaran += berat * harga;
+      });
+
+      document.getElementById("totalItems").textContent = totalItems;
+      document.getElementById("totalBerat").textContent = totalBerat.toFixed(1);
+      document.getElementById("totalPembayaran").textContent =
+        totalPembayaran.toLocaleString("id-ID");
+      document.getElementById("totalHargaInput").value = totalPembayaran;
+    }
+  });
+</script>

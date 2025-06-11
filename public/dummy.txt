@@ -1,0 +1,7 @@
+Kita perlu menambahkan file gambar secara manual:
+
+1. Buat folder di path: public/img/
+2. Tambahkan file gambar hero-bg.jpg ke folder public/img/
+3. Tambahkan file favicon.ico ke folder public/
+
+Atau sebagai alternatif, kita bisa memperbarui CSS untuk tidak memerlukan file gambar.

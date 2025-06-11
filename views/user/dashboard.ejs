@@ -1,0 +1,128 @@
+<%- contentFor('body') %>
+
+<div class="container py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="fw-bold mb-0">Dashboard</h1>
+      <p class="text-muted">Selamat datang, <%= user.nama %>!</p>
+    </div>
+  </div>
+
+  <!-- Statistik Ringkasan -->
+  <div class="row mb-4">
+    <div class="col-md-4 mb-3 mb-md-0">
+      <div class="card dashboard-card h-100">
+        <div class="card-body text-center p-4">
+          <i class="fas fa-recycle card-icon"></i>
+          <h3>0</h3>
+          <h5 class="card-title">Total Setoran</h5>
+          <a href="/user/setoran" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-3 mb-md-0">
+      <div class="card dashboard-card h-100">
+        <div class="card-body text-center p-4">
+          <i class="fas fa-weight-hanging card-icon"></i>
+          <h3>0 Kg</h3>
+          <h5 class="card-title">Total Berat</h5>
+          <a href="/user/setoran" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card dashboard-card h-100">
+        <div class="card-body text-center p-4">
+          <i class="fas fa-money-bill-wave card-icon"></i>
+          <h3>Rp 0</h3>
+          <h5 class="card-title">Total Pendapatan</h5>
+          <a href="/user/setoran" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setoran Terbaru -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div
+          class="card-header bg-white d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0">Setoran Terbaru</h5>
+          <a href="/user/setoran" class="btn btn-sm btn-outline-success"
+            >Lihat Semua</a
+          >
+        </div>
+        <div class="card-body">
+          <div class="text-center py-5">
+            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+            <h4>Belum Ada Setoran</h4>
+            <p>Anda belum melakukan setoran sampah.</p>
+            <a href="/user/setoran/create" class="btn btn-success mt-2">
+              <i class="fas fa-plus-circle me-1"></i> Buat Setoran Baru
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Informasi Harga -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Daftar Harga Sampah</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Kategori</th>
+                  <th>Jenis Sampah</th>
+                  <th>Harga per Kg</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Plastik</td>
+                  <td>Botol Plastik</td>
+                  <td>Rp 2,500</td>
+                </tr>
+                <tr>
+                  <td>Plastik</td>
+                  <td>Gelas Plastik</td>
+                  <td>Rp 2,000</td>
+                </tr>
+                <tr>
+                  <td>Plastik</td>
+                  <td>Kantong Plastik</td>
+                  <td>Rp 1,000</td>
+                </tr>
+                <tr>
+                  <td>Kertas</td>
+                  <td>Kardus</td>
+                  <td>Rp 3,000</td>
+                </tr>
+                <tr>
+                  <td>Kertas</td>
+                  <td>Koran</td>
+                  <td>Rp 2,000</td>
+                </tr>
+                <tr>
+                  <td>Logam</td>
+                  <td>Kaleng Alumunium</td>
+                  <td>Rp 10,000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

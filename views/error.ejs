@@ -1,0 +1,37 @@
+<%- contentFor('body') %>
+
+<div class="container py-5">
+  <div class="row">
+    <div class="col-md-6 offset-md-3 text-center">
+      <h1 class="display-1 text-danger mb-4">
+        <i class="fas fa-exclamation-triangle"></i>
+      </h1>
+      <h2>Terjadi Kesalahan</h2>
+      <div class="alert alert-danger"><%= message %></div>
+
+      <% if (process.env.NODE_ENV === 'development' && error && error.stack) {
+      %>
+      <div class="card mt-4">
+        <div class="card-header bg-dark text-white">
+          Stack Trace (hanya terlihat dalam mode development)
+        </div>
+        <div class="card-body">
+          <pre class="text-start"><%= error.stack %></pre>
+        </div>
+      </div>
+      <% } %>
+
+      <div class="mt-4">
+        <a
+          href="javascript:history.back()"
+          class="btn btn-outline-secondary me-2"
+        >
+          <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+        <a href="/" class="btn btn-primary">
+          <i class="fas fa-home"></i> Ke Halaman Utama
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

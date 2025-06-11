@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta
+      name="description"
+      content="Manajemen Sampah - Kelola sampah dengan mudah dan aman"
+    />
+
+    <title>
+      <%= typeof title !== 'undefined' ? title + ' | ' : '' %>Manajemen Sampah
+    </title>
+
+    <!-- Favicon dari CDN -->
+    <link
+      rel="icon"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/svgs/solid/recycle.svg"
+      type="image/svg+xml"
+    />
+
+    <!-- Security Headers -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https://cdn.jsdelivr.net https://via.placeholder.com; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self';"
+    />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+    <meta
+      http-equiv="Permissions-Policy"
+      content="camera=(), microphone=(), geolocation=()"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <i class="fas fa-recycle me-2"></i>
+          Manajemen Sampah
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Beranda</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">Tentang Kami</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/contact">Kontak</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <% if (user) { %>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="userDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="fas fa-user-circle me-1"></i> <%= user.nama %>
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="userDropdown"
+              >
+                <% if (user.role === 'admin') { %>
+                <li>
+                  <a class="dropdown-item" href="/admin/dashboard"
+                    >Dashboard Admin</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <% } else { %>
+                <li>
+                  <a class="dropdown-item" href="/user/dashboard">Dashboard</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/user/setoran"
+                    >Riwayat Setoran</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <% } %>
+                <li>
+                  <a class="dropdown-item" href="/user/profile">Profil Saya</a>
+                </li>
+                <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
+              </ul>
+            </li>
+            <% } else { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/auth/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/auth/register">Daftar</a>
+            </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+    <div class="container mt-3">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+    </div>
+    <% } %> <% if (typeof success !== 'undefined' && success && success.length >
+    0) { %>
+    <div class="container mt-3">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success %>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- Main Content -->
+    <main class="py-4"><%- body %></main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5><i class="fas fa-recycle me-2"></i> Manajemen Sampah</h5>
+            <p>
+              Aplikasi manajemen sampah untuk lingkungan yang lebih bersih dan
+              sehat.
+            </p>
+          </div>
+          <div class="col-md-3">
+            <h5>Link</h5>
+            <ul class="list-unstyled">
+              <li><a href="/" class="text-white">Beranda</a></li>
+              <li><a href="/about" class="text-white">Tentang Kami</a></li>
+              <li><a href="/contact" class="text-white">Kontak</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h5>Kontak</h5>
+            <ul class="list-unstyled">
+              <li>
+                <i class="fas fa-map-marker-alt me-2"></i> Jl. Kosan Kuning
+                dekat itenas No. 123
+              </li>
+              <li><i class="fas fa-phone me-2"></i> (021) 123-4567</li>
+              <li>
+                <i class="fas fa-envelope me-2"></i> info@manajemensampah.com
+              </li>
+            </ul>
+          </div>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col text-center">
+            <p class="mb-0">
+              &copy; <%= new Date().getFullYear() %> Manajemen Sampah. All
+              rights reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- CSRF Token for AJAX Requests -->
+    <script>
+      const csrfToken = "<%= csrfToken %>";
+
+      // Set CSRF token pada semua AJAX requests
+      document.addEventListener("DOMContentLoaded", function () {
+        // Attach CSRF token to all AJAX requests
+        const originalSend = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.send = function (data) {
+          this.setRequestHeader("CSRF-Token", csrfToken);
+          originalSend.apply(this, arguments);
+        };
+      });
+    </script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+  </body>
+</html>

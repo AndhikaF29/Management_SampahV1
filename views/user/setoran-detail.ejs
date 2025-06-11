@@ -1,0 +1,136 @@
+<%- contentFor('body') %>
+
+<div class="container py-4">
+  <div class="mb-4">
+    <a href="/user/setoran" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left me-1"></i> Kembali
+    </a>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header bg-white">
+      <h5 class="mb-0">Detail Setoran #<%= setoran ? setoran.id : 'N/A' %></h5>
+    </div>
+    <div class="card-body">
+      <% if (setoran) { %>
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <table class="table table-borderless">
+            <tr>
+              <th style="width: 30%">Tanggal</th>
+              <td>
+                <%= new Date(setoran.tanggal).toLocaleDateString('id-ID', {day:
+                'numeric', month: 'long', year: 'numeric', hour: '2-digit',
+                minute: '2-digit'}) %>
+              </td>
+            </tr>
+            <tr>
+              <th>Status</th>
+              <td>
+                <% if (setoran.status === 'menunggu') { %>
+                <span class="badge status-badge status-pending">Menunggu</span>
+                <% } else if (setoran.status === 'diproses') { %>
+                <span class="badge status-badge status-processing"
+                  >Diproses</span
+                >
+                <% } else if (setoran.status === 'selesai') { %>
+                <span class="badge status-badge status-completed">Selesai</span>
+                <% } else { %>
+                <span class="badge status-badge status-cancelled"
+                  >Dibatalkan</span
+                >
+                <% } %>
+              </td>
+            </tr>
+            <tr>
+              <th>Total</th>
+              <td>
+                <strong
+                  >Rp <%= setoran.total_harga.toLocaleString('id-ID') %></strong
+                >
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="col-md-6">
+          <div class="alert alert-light border">
+            <h6 class="mb-3">
+              <i class="fas fa-info-circle me-1"></i> Informasi Status
+            </h6>
+            <ul class="mb-0 ps-3">
+              <li>
+                <strong>Menunggu</strong> - Setoran Anda sedang menunggu
+                verifikasi
+              </li>
+              <li>
+                <strong>Diproses</strong> - Setoran Anda sedang dalam proses
+              </li>
+              <li>
+                <strong>Selesai</strong> - Setoran Anda telah selesai diproses
+              </li>
+              <li>
+                <strong>Dibatalkan</strong> - Setoran Anda telah dibatalkan
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h5 class="border-bottom pb-2 mb-3">Detail Sampah</h5>
+
+      <% if (items && items.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Kategori</th>
+              <th>Jenis Sampah</th>
+              <th>Berat (kg)</th>
+              <th>Harga per kg</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% items.forEach((item, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= item.kategori_nama %></td>
+              <td><%= item.sampah_nama %></td>
+              <td><%= item.berat %> kg</td>
+              <td>Rp <%= item.harga_satuan.toLocaleString('id-ID') %></td>
+              <td>Rp <%= item.total.toLocaleString('id-ID') %></td>
+            </tr>
+            <% }); %>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="5" class="text-end">Total</th>
+              <th>Rp <%= setoran.total_harga.toLocaleString('id-ID') %></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <% } else { %>
+      <div class="alert alert-info">Tidak ada detail item yang tersedia</div>
+      <% } %> <% if (setoran.status === 'menunggu') { %>
+      <div class="alert alert-warning mt-4">
+        <i class="fas fa-clock me-2"></i>
+        <strong>Setoran Anda sedang menunggu verifikasi dari admin.</strong>
+        <br />
+        Silakan tunggu konfirmasi dari admin untuk proses selanjutnya.
+      </div>
+      <% } else if (setoran.status === 'selesai') { %>
+      <div class="alert alert-success mt-4">
+        <i class="fas fa-check-circle me-2"></i>
+        <strong>Setoran Anda telah selesai diproses.</strong>
+        <br />
+        Terima kasih telah berkontribusi dalam menjaga lingkungan.
+      </div>
+      <% } %> <% } else { %>
+      <div class="alert alert-danger">Data setoran tidak ditemukan</div>
+      <% } %>
+    </div>
+  </div>
+</div>

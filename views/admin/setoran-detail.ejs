@@ -1,0 +1,240 @@
+<%- contentFor('body') %>
+
+<div class="container py-4">
+  <div class="mb-4">
+    <a href="/admin/setoran" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left me-1"></i> Kembali
+    </a>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Detail Setoran #<%= setoran ? setoran.id : 'N/A' %></h5>
+      <% if (setoran) { %>
+        <button class="btn btn-outline-primary btn-sm" id="changeStatusBtn">
+          <i class="fas fa-pen me-1"></i> Update Status
+        </button>
+      <% } %>
+    </div>
+    <div class="card-body">
+      <% if (setoran) { %>
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <table class="table table-borderless">
+              <tr>
+                <th style="width: 150px">Tanggal</th>
+                <td>
+                  <%= new Date(setoran.tanggal).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'}) %>
+                </td>
+              </tr>
+              <tr>
+                <th>User</th>
+                <td><%= setoran.user_nama %></td>
+              </tr>
+              <tr>
+                <th>Status</th>
+                <td>
+                  <% if (setoran.status === 'menunggu') { %>
+                    <span class="badge bg-warning text-dark">Menunggu</span>
+                  <% } else if (setoran.status === 'diproses') { %>
+                    <span class="badge bg-info">Diproses</span>
+                  <% } else if (setoran.status === 'selesai') { %>
+                    <span class="badge bg-success">Selesai</span>
+                  <% } else { %>
+                    <span class="badge bg-secondary">Dibatalkan</span>
+                  <% } %>
+                </td>
+              </tr>
+              <tr>
+                <th>Total</th>
+                <td><strong>Rp <%= setoran.total_harga.toLocaleString('id-ID') %></strong></td>
+              </tr>
+            </table>
+          </div>
+          
+          <div class="col-md-6">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h6 class="mb-3">Alur Proses</h6>
+                <ul class="timeline">
+                  <li class="timeline-item <%= setoran.status != 'dibatalkan' ? 'completed' : '' %>">
+                    <span class="timeline-point"></span>
+                    <div class="timeline-content">
+                      <h6>Penerimaan Setoran</h6>
+                      <p class="text-muted mb-0">Setoran telah diterima dan menunggu verifikasi</p>
+                    </div>
+                  </li>
+                  <li class="timeline-item <%= ['diproses', 'selesai'].includes(setoran.status) ? 'completed' : '' %>">
+                    <span class="timeline-point"></span>
+                    <div class="timeline-content">
+                      <h6>Pemrosesan</h6>
+                      <p class="text-muted mb-0">Sedang dilakukan verifikasi dan pemrosesan sampah</p>
+                    </div>
+                  </li>
+                  <li class="timeline-item <%= setoran.status === 'selesai' ? 'completed' : '' %>">
+                    <span class="timeline-point"></span>
+                    <div class="timeline-content">
+                      <h6>Selesai</h6>
+                      <p class="text-muted mb-0">Setoran telah diproses dan selesai</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <h5 class="border-bottom pb-2 mb-3">Detail Sampah</h5>
+        
+        <% if (items && items.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Kategori</th>
+                  <th>Jenis Sampah</th>
+                  <th>Berat (kg)</th>
+                  <th>Harga per kg</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% items.forEach((item, index) => { %>
+                  <tr>
+                    <td><%= index + 1 %></td>
+                    <td><%= item.kategori_nama %></td>
+                    <td><%= item.sampah_nama %></td>
+                    <td><%= item.berat %> kg</td>
+                    <td>Rp <%= item.harga_satuan.toLocaleString('id-ID') %></td>
+                    <td>Rp <%= item.total.toLocaleString('id-ID') %></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="5" class="text-end">Total</th>
+                  <th>Rp <%= setoran.total_harga.toLocaleString('id-ID') %></th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        <% } else { %>
+          <div class="alert alert-info">
+            Tidak ada detail item yang tersedia
+          </div>
+        <% } %>
+      <% } else { %>
+        <div class="alert alert-danger">
+          Data setoran tidak ditemukan
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- Status Change Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Status Setoran</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <% if (setoran) { %>
+          <form action="/admin/setoran/<%= setoran.id %>/status" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            
+            <div class="mb-3">
+              <label class="form-label">Status Saat Ini</label>
+              <input type="text" class="form-control" value="<%= setoran.status === 'menunggu' ? 'Menunggu' : setoran.status === 'diproses' ? 'Diproses' : setoran.status === 'selesai' ? 'Selesai' : 'Dibatalkan' %>" readonly>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Status Baru</label>
+              <select class="form-select" name="status" required>
+                <option value="menunggu" <%= setoran.status === 'menunggu' ? 'selected' : '' %>>Menunggu</option>
+                <option value="diproses" <%= setoran.status === 'diproses' ? 'selected' : '' %>>Diproses</option>
+                <option value="selesai" <%= setoran.status === 'selesai' ? 'selected' : '' %>>Selesai</option>
+                <option value="dibatalkan" <%= setoran.status === 'dibatalkan' ? 'selected' : '' %>>Dibatalkan</option>
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Catatan (Opsional)</label>
+              <textarea class="form-control" name="catatan" rows="3"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-success">Update Status</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .timeline {
+    position: relative;
+    padding-left: 30px;
+    list-style: none;
+  }
+  
+  .timeline-item {
+    position: relative;
+    padding-bottom: 25px;
+    color: #6c757d;
+  }
+  
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+  
+  .timeline-point {
+    position: absolute;
+    left: -30px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 2px #dee2e6;
+  }
+  
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -21px;
+    top: 20px;
+    height: calc(100% - 20px);
+    width: 2px;
+    background-color: #dee2e6;
+  }
+  
+  .timeline-item:last-child::before {
+    display: none;
+  }
+  
+  .timeline-item.completed .timeline-point {
+    background-color: #28a745;
+  }
+  
+  .timeline-content {
+    padding-left: 10px;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const changeStatusBtn = document.getElementById('changeStatusBtn');
+    
+    if (changeStatusBtn) {
+      changeStatusBtn.addEventListener('click', function() {
+        const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
+        statusModal.show();
+      });
+    }
+  });
+</script>

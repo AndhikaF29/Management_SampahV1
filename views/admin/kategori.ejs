@@ -1,0 +1,208 @@
+<%- contentFor('body') %>
+
+<div class="container py-4">
+  <h1 class="mb-4">Manajemen Kategori Sampah</h1>
+
+  <div class="row">
+    <!-- Form tambah/edit kategori -->
+    <div class="col-md-4 mb-4 mb-md-0">
+      <div class="card">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Tambah Kategori</h5>
+        </div>
+        <div class="card-body">
+          <form action="/admin/kategori" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <input type="hidden" name="id" id="kategoriId" />
+
+            <div class="mb-3">
+              <label for="nama" class="form-label">Nama Kategori</label>
+              <input
+                type="text"
+                class="form-control"
+                id="nama"
+                name="nama"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="deskripsi" class="form-label">Deskripsi</label>
+              <textarea
+                class="form-control"
+                id="deskripsi"
+                name="deskripsi"
+                rows="4"
+              ></textarea>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success" id="submitBtn">
+                Tambah Kategori
+              </button>
+            </div>
+
+            <div class="mt-2 d-grid d-none" id="cancelBtnContainer">
+              <button type="button" class="btn btn-secondary" id="cancelBtn">
+                Batal Edit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daftar kategori -->
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Daftar Kategori</h5>
+        </div>
+        <div class="card-body">
+          <% if (kategori && kategori.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nama</th>
+                  <th>Deskripsi</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% kategori.forEach(item => { %>
+                <tr>
+                  <td><%= item.id %></td>
+                  <td><%= item.nama %></td>
+                  <td><%= item.deskripsi %></td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary edit-btn"
+                        data-id="<%= item.id %>"
+                        data-nama="<%= item.nama %>"
+                        data-deskripsi="<%= item.deskripsi %>"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <a
+                        href="/admin/kategori/<%= item.id %>/delete"
+                        class="btn btn-outline-danger delete-btn"
+                        data-id="<%= item.id %>"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } else { %>
+          <div class="text-center py-5">
+            <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+            <h4>Belum Ada Kategori</h4>
+            <p>Tambahkan kategori baru menggunakan form di samping.</p>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Hapus Kategori</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Apakah Anda yakin ingin menghapus kategori ini? Tindakan ini mungkin
+          akan mempengaruhi data sampah terkait.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Batal
+        </button>
+        <a href="#" id="confirmDeleteButton" class="btn btn-danger"
+          >Hapus Kategori</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Tangkap elemen-elemen form
+    const form = document.querySelector("form");
+    const kategoriIdInput = document.getElementById("kategoriId");
+    const namaInput = document.getElementById("nama");
+    const deskripsiInput = document.getElementById("deskripsi");
+    const submitBtn = document.getElementById("submitBtn");
+    const cancelBtnContainer = document.getElementById("cancelBtnContainer");
+    const cancelBtn = document.getElementById("cancelBtn");
+
+    // Fungsi untuk edit kategori
+    const editButtons = document.querySelectorAll(".edit-btn");
+    editButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const id = this.getAttribute("data-id");
+        const nama = this.getAttribute("data-nama");
+        const deskripsi = this.getAttribute("data-deskripsi");
+
+        // Set form untuk mode edit
+        kategoriIdInput.value = id;
+        namaInput.value = nama;
+        deskripsiInput.value = deskripsi;
+        submitBtn.textContent = "Update Kategori";
+        cancelBtnContainer.classList.remove("d-none");
+
+        // Ubah action form ke endpoint update
+        form.action = `/admin/kategori/${id}`;
+
+        // Scroll ke form
+        form.scrollIntoView({ behavior: "smooth" });
+      });
+    });
+
+    // Reset form ke mode tambah
+    cancelBtn.addEventListener("click", function () {
+      kategoriIdInput.value = "";
+      namaInput.value = "";
+      deskripsiInput.value = "";
+      submitBtn.textContent = "Tambah Kategori";
+      cancelBtnContainer.classList.add("d-none");
+      form.action = "/admin/kategori";
+    });
+
+    // Handler untuk konfirmasi hapus
+    const deleteButtons = document.querySelectorAll(".delete-btn");
+    deleteButtons.forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+        const deleteUrl = this.getAttribute("href");
+
+        const modal = new bootstrap.Modal(
+          document.getElementById("deleteModal")
+        );
+        const confirmButton = document.getElementById("confirmDeleteButton");
+        confirmButton.href = deleteUrl;
+        modal.show();
+      });
+    });
+  });
+</script>

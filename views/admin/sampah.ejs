@@ -1,0 +1,302 @@
+<%- contentFor('body') %>
+
+<div class="container py-4">
+  <h1 class="mb-4">Manajemen Jenis Sampah</h1>
+
+  <div class="card mb-4">
+    <div class="card-header bg-white">
+      <h5 class="mb-0">Tambah Jenis Sampah Baru</h5>
+    </div>
+    <div class="card-body">
+      <form action="/admin/sampah" method="POST" id="sampahForm">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="hidden" name="id" id="sampahId" />
+
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="kategori_id" class="form-label">Kategori</label>
+            <select
+              class="form-select"
+              id="kategori_id"
+              name="kategori_id"
+              required
+            >
+              <option value="" selected disabled>Pilih kategori</option>
+              <option value="1">Organik</option>
+              <option value="2">Plastik</option>
+              <option value="3">Kertas</option>
+              <option value="4">Logam</option>
+              <option value="5">Elektronik</option>
+              <option value="6">Kaca</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label for="nama" class="form-label">Nama Jenis</label>
+            <input
+              type="text"
+              class="form-control"
+              id="nama"
+              name="nama"
+              required
+            />
+          </div>
+
+          <div class="col-md-4">
+            <label for="harga_per_kg" class="form-label"
+              >Harga per Kg (Rp)</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="harga_per_kg"
+              name="harga_per_kg"
+              min="0"
+              step="100"
+              required
+            />
+          </div>
+
+          <div class="col-12">
+            <label for="deskripsi" class="form-label">Deskripsi</label>
+            <textarea
+              class="form-control"
+              id="deskripsi"
+              name="deskripsi"
+              rows="2"
+            ></textarea>
+          </div>
+
+          <div class="col-12 d-flex">
+            <button type="submit" class="btn btn-success me-2" id="submitBtn">
+              Tambah Sampah
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary d-none"
+              id="cancelBtn"
+            >
+              Batal Edit
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card">
+    <div
+      class="card-header bg-white d-flex justify-content-between align-items-center"
+    >
+      <h5 class="mb-0">Daftar Jenis Sampah</h5>
+      <div class="d-flex align-items-center">
+        <select class="form-select form-select-sm me-2" id="filterKategori">
+          <option value="">Semua Kategori</option>
+          <option value="1">Organik</option>
+          <option value="2">Plastik</option>
+          <option value="3">Kertas</option>
+          <option value="4">Logam</option>
+          <option value="5">Elektronik</option>
+          <option value="6">Kaca</option>
+        </select>
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          placeholder="Cari..."
+          id="searchInput"
+        />
+      </div>
+    </div>
+    <div class="card-body">
+      <% if (sampah && sampah.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Kategori</th>
+              <th>Nama</th>
+              <th>Harga/Kg</th>
+              <th>Deskripsi</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% sampah.forEach(item => { %>
+            <tr>
+              <td><%= item.id %></td>
+              <td><%= item.kategori_nama %></td>
+              <td><%= item.nama %></td>
+              <td>Rp <%= item.harga_per_kg.toLocaleString('id-ID') %></td>
+              <td><%= item.deskripsi %></td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary edit-btn"
+                    data-id="<%= item.id %>"
+                    data-kategori-id="<%= item.kategori_id %>"
+                    data-nama="<%= item.nama %>"
+                    data-harga="<%= item.harga_per_kg %>"
+                    data-deskripsi="<%= item.deskripsi %>"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <a
+                    href="/admin/sampah/<%= item.id %>/delete"
+                    class="btn btn-outline-danger delete-btn"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <% } else { %>
+      <div class="text-center py-5">
+        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+        <h4>Belum Ada Data Sampah</h4>
+        <p class="text-muted">
+          Tambahkan jenis sampah baru menggunakan form di atas.
+        </p>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Hapus Jenis Sampah</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Apakah Anda yakin ingin menghapus jenis sampah ini? Tindakan ini tidak
+          dapat dibatalkan dan mungkin mempengaruhi data setoran.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Batal
+        </button>
+        <a href="#" id="confirmDeleteButton" class="btn btn-danger">Hapus</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Edit form setup
+    const form = document.getElementById("sampahForm");
+    const sampahIdInput = document.getElementById("sampahId");
+    const kategoriIdInput = document.getElementById("kategori_id");
+    const namaInput = document.getElementById("nama");
+    const hargaInput = document.getElementById("harga_per_kg");
+    const deskripsiInput = document.getElementById("deskripsi");
+    const submitBtn = document.getElementById("submitBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+
+    // Edit button handlers
+    const editBtns = document.querySelectorAll(".edit-btn");
+    editBtns.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const id = this.getAttribute("data-id");
+        const kategoriId = this.getAttribute("data-kategori-id");
+        const nama = this.getAttribute("data-nama");
+        const harga = this.getAttribute("data-harga");
+        const deskripsi = this.getAttribute("data-deskripsi");
+
+        // Populate form for editing
+        sampahIdInput.value = id;
+        kategoriIdInput.value = kategoriId;
+        namaInput.value = nama;
+        hargaInput.value = harga;
+        deskripsiInput.value = deskripsi;
+
+        // Change form appearance for edit mode
+        submitBtn.textContent = "Update Sampah";
+        cancelBtn.classList.remove("d-none");
+
+        // Change form action
+        form.action = `/admin/sampah/${id}`;
+
+        // Scroll to form
+        form.scrollIntoView({ behavior: "smooth" });
+      });
+    });
+
+    // Cancel edit
+    cancelBtn.addEventListener("click", function () {
+      // Reset form
+      sampahIdInput.value = "";
+      kategoriIdInput.value = "";
+      namaInput.value = "";
+      hargaInput.value = "";
+      deskripsiInput.value = "";
+
+      // Reset form appearance
+      submitBtn.textContent = "Tambah Sampah";
+      cancelBtn.classList.add("d-none");
+
+      // Reset form action
+      form.action = "/admin/sampah";
+    });
+
+    // Delete confirmation
+    const deleteBtns = document.querySelectorAll(".delete-btn");
+    deleteBtns.forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const deleteUrl = this.getAttribute("href");
+
+        const modal = new bootstrap.Modal(
+          document.getElementById("deleteModal")
+        );
+        document.getElementById("confirmDeleteButton").href = deleteUrl;
+        modal.show();
+      });
+    });
+
+    // Quick search
+    const searchInput = document.getElementById("searchInput");
+    const filterSelect = document.getElementById("filterKategori");
+    const tableRows = document.querySelectorAll("tbody tr");
+
+    function filterTable() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const filterValue = filterSelect.value;
+
+      tableRows.forEach((row) => {
+        const kategoriId = row.querySelector("td:nth-child(1)").textContent;
+        const name = row
+          .querySelector("td:nth-child(3)")
+          .textContent.toLowerCase();
+
+        const matchesSearch = name.includes(searchTerm);
+        const matchesFilter = filterValue === "" || kategoriId === filterValue;
+
+        if (matchesSearch && matchesFilter) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
+
+    searchInput.addEventListener("input", filterTable);
+    filterSelect.addEventListener("change", filterTable);
+  });
+</script>

@@ -1,0 +1,182 @@
+<%- contentFor('body') %>
+
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="fw-bold mb-0">Dashboard Admin</h1>
+      <p class="text-muted">Selamat datang di panel admin manajemen sampah</p>
+    </div>
+  </div>
+
+  <!-- Statistik Ringkasan -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-4 mb-md-0">
+      <div class="card dashboard-card h-100">
+        <div class="card-body text-center p-4">
+          <i class="fas fa-users card-icon"></i>
+          <h3><%= totalUsers || 0 %></h3>
+          <h5 class="card-title">Total User</h5>
+          <a href="/admin/users" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4 mb-md-0">
+      <div class="card dashboard-card h-100">
+        <div class="card-body text-center p-4">
+          <i class="fas fa-recycle card-icon"></i>
+          <h3><%= totalSetoran || 0 %></h3>
+          <h5 class="card-title">Total Setoran</h5>
+          <a href="/admin/setoran" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4 mb-md-0">
+      <div class="card dashboard-card h-100">
+        <div class="card-body text-center p-4">
+          <i class="fas fa-tags card-icon"></i>
+          <h3><%= totalSampah || 0 %></h3>
+          <h5 class="card-title">Jenis Sampah</h5>
+          <a href="/admin/sampah" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card dashboard-card h-100">
+        <div class="card-body text-center p-4">
+          <i class="fas fa-money-bill-wave card-icon"></i>
+          <h3>
+            Rp <%= totalPembayaran ? totalPembayaran.toLocaleString('id-ID') :
+            '0' %>
+          </h3>
+          <h5 class="card-title">Total Pembayaran</h5>
+          <a href="/admin/laporan/harian" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setoran Terbaru -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div
+          class="card-header bg-white d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0">Setoran Terbaru</h5>
+          <a href="/admin/setoran" class="btn btn-sm btn-outline-success"
+            >Lihat Semua</a
+          >
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tanggal</th>
+                  <th>Nama</th>
+                  <th>Jumlah (Kg)</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (recentSetoran && recentSetoran.length > 0) { %> <%
+                recentSetoran.forEach(function(item) { %>
+                <tr>
+                  <td>#<%= item.id || '-' %></td>
+                  <td>
+                    <%= new Date(item.tanggal).toLocaleDateString('id-ID') %>
+                  </td>
+                  <td><%= item.user_nama || '-' %></td>
+                  <td><%= item.berat || 0 %> Kg</td>
+                  <td>
+                    Rp <%= parseInt(item.total).toLocaleString('id-ID') %>
+                  </td>
+                  <td>
+                    <span class="badge bg-success">Selesai</span>
+                  </td>
+                  <td>
+                    <a
+                      href="/admin/setoran/<%= item.id %>"
+                      class="btn btn-sm btn-outline-primary"
+                    >
+                      <i class="fas fa-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+                <% }); %> <% } else { %>
+                <tr>
+                  <td colspan="7" class="text-center py-3">
+                    <p class="text-muted mb-0">Belum ada data setoran</p>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grafik & Statistik -->
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Setoran per Kategori</h5>
+        </div>
+        <div class="card-body d-flex align-items-center justify-content-center">
+          <div class="text-center">
+            <i class="fas fa-chart-pie fa-4x text-secondary mb-3"></i>
+            <p>Belum ada data untuk ditampilkan</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Trend Setoran</h5>
+        </div>
+        <div class="card-body d-flex align-items-center justify-content-center">
+          <div class="text-center">
+            <i class="fas fa-chart-line fa-4x text-secondary mb-3"></i>
+            <p>Belum ada data untuk ditampilkan</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aktivitas Terbaru -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Aktivitas Terbaru</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center">
+              Belum ada aktivitas tercatat
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Script untuk mengatur tampilan dashboard admin
+    // Bisa menambahkan visualisasi data dengan chart.js atau library lainnya di sini
+  });
+</script>

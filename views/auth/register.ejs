@@ -1,0 +1,216 @@
+<%- contentFor('body') %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="auth-form">
+        <h2 class="text-center">Daftar Akun Baru</h2>
+
+        <form
+          action="/auth/register"
+          method="POST"
+          class="needs-validation"
+          novalidate
+        >
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label for="nama" class="form-label">Nama Lengkap</label>
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-user"></i
+                ></span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nama"
+                  name="nama"
+                  placeholder="Masukkan nama lengkap anda"
+                  required
+                  autofocus
+                />
+              </div>
+              <div class="invalid-feedback">Nama lengkap harus diisi.</div>
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="email" class="form-label">Email</label>
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-envelope"></i
+                ></span>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  placeholder="Masukkan email anda"
+                  required
+                />
+              </div>
+              <div class="invalid-feedback">
+                Email harus diisi dengan format yang benar.
+              </div>
+              <div class="form-text">
+                Email akan digunakan untuk login dan komunikasi.
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-lock"></i
+                ></span>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  placeholder="Masukkan password"
+                  required
+                  minlength="6"
+                  pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$"
+                  title="Password minimal 6 karakter dengan kombinasi huruf dan angka"
+                />
+              </div>
+              <div class="invalid-feedback">
+                Password harus minimal 6 karakter dengan kombinasi huruf dan
+                angka.
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="password_confirm" class="form-label"
+                >Konfirmasi Password</label
+              >
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-lock"></i
+                ></span>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password_confirm"
+                  name="password_confirm"
+                  placeholder="Masukkan ulang password"
+                  required
+                />
+              </div>
+              <div class="invalid-feedback">
+                Password konfirmasi harus sama dengan password.
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="alamat" class="form-label">Alamat</label>
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-map-marker-alt"></i
+              ></span>
+              <textarea
+                class="form-control"
+                id="alamat"
+                name="alamat"
+                rows="2"
+                placeholder="Masukkan alamat lengkap anda"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="no_telp" class="form-label">Nomor Telepon</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-phone"></i></span>
+              <input
+                type="tel"
+                class="form-control"
+                id="no_telp"
+                name="no_telp"
+                placeholder="Masukkan nomor telepon anda"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3 form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="agreement"
+              required
+            />
+            <label class="form-check-label" for="agreement">
+              Saya menyetujui <a href="#">Syarat dan Ketentuan</a> serta
+              <a href="#">Kebijakan Privasi</a>
+            </label>
+            <div class="invalid-feedback">
+              Anda harus menyetujui syarat dan ketentuan untuk mendaftar.
+            </div>
+          </div>
+
+          <div class="d-grid gap-2 mb-3">
+            <button type="submit" class="btn btn-success btn-lg">Daftar</button>
+          </div>
+        </form>
+
+        <div class="text-center mt-3">
+          <p>Sudah punya akun? <a href="/auth/login">Login di sini</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Form validation script
+  document.addEventListener("DOMContentLoaded", function () {
+    // Fetch all the forms we want to apply custom validation
+    var forms = document.querySelectorAll(".needs-validation");
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener(
+        "submit",
+        function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          } else {
+            // Check if passwords match
+            const password = document.getElementById("password");
+            const passwordConfirm = document.getElementById("password_confirm");
+
+            if (password.value !== passwordConfirm.value) {
+              event.preventDefault();
+              event.stopPropagation();
+              passwordConfirm.setCustomValidity("Password tidak sama");
+            } else {
+              passwordConfirm.setCustomValidity("");
+            }
+          }
+
+          form.classList.add("was-validated");
+        },
+        false
+      );
+
+      // Real-time password confirm validation
+      const passwordInput = form.querySelector("#password");
+      const confirmPasswordInput = form.querySelector("#password_confirm");
+
+      if (passwordInput && confirmPasswordInput) {
+        confirmPasswordInput.addEventListener("input", function () {
+          if (passwordInput.value !== confirmPasswordInput.value) {
+            confirmPasswordInput.setCustomValidity("Password tidak sama");
+          } else {
+            confirmPasswordInput.setCustomValidity("");
+          }
+        });
+      }
+    });
+  });
+</script>

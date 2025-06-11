@@ -1,0 +1,130 @@
+<%- contentFor('body') %>
+
+<div class="container py-5">
+  <div class="row mb-5">
+    <div class="col-12 text-center">
+      <h1>Hubungi Kami</h1>
+      <p class="lead">
+        Kami siap membantu Anda dengan pertanyaan atau masukan apa pun
+      </p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-4 mb-md-0">
+      <div class="card h-100">
+        <div class="card-body p-4">
+          <h3 class="mb-4">Kirim Pesan</h3>
+          <form action="/contact" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+            <div class="mb-3">
+              <label for="nama" class="form-label">Nama Lengkap</label>
+              <input
+                type="text"
+                class="form-control"
+                id="nama"
+                name="nama"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="pesan" class="form-label">Pesan</label>
+              <textarea
+                class="form-control"
+                id="pesan"
+                name="pesan"
+                rows="5"
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">Kirim Pesan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body p-4">
+          <h3 class="mb-4">Informasi Kontak</h3>
+
+          <div class="d-flex mb-4">
+            <div class="flex-shrink-0 me-3 text-success">
+              <i class="fas fa-map-marker-alt fa-2x"></i>
+            </div>
+            <div>
+              <h5>Alamat</h5>
+              <p>
+                Jl. Lingkungan Hijau No. 123<br />Jakarta Selatan, 12345<br />Indonesia
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex mb-4">
+            <div class="flex-shrink-0 me-3 text-success">
+              <i class="fas fa-phone fa-2x"></i>
+            </div>
+            <div>
+              <h5>Telepon</h5>
+              <p>(021) 123-4567<br />+62 812-3456-7890</p>
+            </div>
+          </div>
+
+          <div class="d-flex mb-4">
+            <div class="flex-shrink-0 me-3 text-success">
+              <i class="fas fa-envelope fa-2x"></i>
+            </div>
+            <div>
+              <h5>Email</h5>
+              <p>info@manajemensampah.com<br />support@manajemensampah.com</p>
+            </div>
+          </div>
+
+          <div class="d-flex">
+            <div class="flex-shrink-0 me-3 text-success">
+              <i class="fas fa-clock fa-2x"></i>
+            </div>
+            <div>
+              <h5>Jam Operasional</h5>
+              <p>
+                Senin - Jumat: 08:00 - 17:00<br />Sabtu: 09:00 - 14:00<br />Minggu
+                dan Hari Besar: Tutup
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body p-0">
+          <!-- Embed Google Maps (diganti dengan gambar placeholder) -->
+          <div class="bg-light text-center py-5">
+            <i class="fas fa-map fa-4x mb-3 text-secondary"></i>
+            <h4>Peta Lokasi</h4>
+            <p class="mb-0">
+              Di implementasi sebenarnya, ini akan berisi embedded Google Maps
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

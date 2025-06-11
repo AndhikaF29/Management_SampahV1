@@ -1,0 +1,186 @@
+<%- contentFor('body') %>
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <h1>Manajemen Sampah</h1>
+    <p>
+      Kelola sampah Anda dengan mudah dan bantu menjaga lingkungan tetap bersih
+      dan sehat.
+    </p>
+    <div>
+      <% if (!user) { %>
+      <a href="/auth/register" class="btn btn-success btn-lg me-2"
+        >Daftar Sekarang</a
+      >
+      <a href="/auth/login" class="btn btn-outline-light btn-lg">Login</a>
+      <% } else if (user.role === 'user') { %>
+      <a href="/user/setoran/create" class="btn btn-success btn-lg me-2"
+        >Setor Sampah</a
+      >
+      <a href="/user/dashboard" class="btn btn-outline-light btn-lg"
+        >Dashboard Saya</a
+      >
+      <% } else if (user.role === 'admin') { %>
+      <a href="/admin/dashboard" class="btn btn-success btn-lg"
+        >Dashboard Admin</a
+      >
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- Feature Section -->
+<section class="container my-5">
+  <h2 class="text-center mb-5">Fitur Aplikasi Manajemen Sampah</h2>
+  <div class="row">
+    <div class="col-md-4 mb-4">
+      <div class="feature-card">
+        <i class="fas fa-recycle"></i>
+        <h3>Setor Sampah</h3>
+        <p>
+          Setor sampah dengan mudah dan dapatkan reward sesuai dengan jenis dan
+          berat sampah yang Anda setorkan.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="feature-card">
+        <i class="fas fa-history"></i>
+        <h3>Riwayat Setoran</h3>
+        <p>
+          Pantau riwayat setoran sampah dan lihat detail setiap transaksi yang
+          Anda lakukan.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="feature-card">
+        <i class="fas fa-shield-alt"></i>
+        <h3>Keamanan Terjamin</h3>
+        <p>
+          Aplikasi ini mengutamakan keamanan data dan transaksi Anda dengan
+          sistem keamanan yang terjamin.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Category Section -->
+<section class="bg-light py-5">
+  <div class="container">
+    <h2 class="text-center mb-5">Kategori Sampah</h2>
+    <div class="row">
+      <% if (kategori && kategori.length > 0) { %> <%
+      kategori.forEach(function(kat) { %>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <% let icon = 'fa-trash'; %> <% if
+            (kat.nama.toLowerCase().includes('organik')) icon = 'fa-leaf'; %> <%
+            if (kat.nama.toLowerCase().includes('plastik')) icon =
+            'fa-wine-bottle'; %> <% if
+            (kat.nama.toLowerCase().includes('kertas')) icon = 'fa-newspaper';
+            %> <% if (kat.nama.toLowerCase().includes('logam')) icon =
+            'fa-cube'; %> <% if (kat.nama.toLowerCase().includes('elektronik'))
+            icon = 'fa-laptop'; %>
+
+            <i class="fas <%= icon %> fa-3x mb-3 text-success"></i>
+            <h4 class="card-title"><%= kat.nama %></h4>
+            <p class="card-text"><%= kat.deskripsi %></p>
+          </div>
+        </div>
+      </div>
+      <% }); %> <% } else { %>
+      <div class="col-12 text-center">
+        <p>Belum ada kategori sampah yang tersedia</p>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- Info Section -->
+<section class="container my-5">
+  <div class="row align-items-center">
+    <div class="col-md-6">
+      <h2>Mengapa harus mengelola sampah?</h2>
+      <p class="lead">
+        Pengelolaan sampah yang baik memiliki banyak manfaat bagi lingkungan dan
+        masyarakat:
+      </p>
+      <ul class="list-unstyled">
+        <li>
+          <i class="fas fa-check-circle text-success me-2"></i> Mengurangi
+          polusi tanah, air, dan udara
+        </li>
+        <li>
+          <i class="fas fa-check-circle text-success me-2"></i> Mencegah
+          penyebaran penyakit
+        </li>
+        <li>
+          <i class="fas fa-check-circle text-success me-2"></i> Menghemat sumber
+          daya alam
+        </li>
+        <li>
+          <i class="fas fa-check-circle text-success me-2"></i> Menciptakan
+          lingkungan yang bersih dan sehat
+        </li>
+        <li>
+          <i class="fas fa-check-circle text-success me-2"></i> Mendapatkan
+          nilai ekonomi dari sampah daur ulang
+        </li>
+      </ul>
+      <a href="/about" class="btn btn-success mt-3">Pelajari Lebih Lanjut</a>
+    </div>
+    <div class="col-md-6 mt-4 mt-md-0">
+      <div class="card bg-success text-white">
+        <div class="card-body p-4">
+          <h3 class="card-title">Statistik Sampah di Indonesia</h3>
+          <hr class="border-light" />
+          <div class="row text-center">
+            <div class="col-6 mb-3">
+              <h4>67.8 juta</h4>
+              <p>Ton sampah per tahun</p>
+            </div>
+            <div class="col-6 mb-3">
+              <h4>0.7 kg</h4>
+              <p>Sampah per orang per hari</p>
+            </div>
+            <div class="col-6">
+              <h4>65%</h4>
+              <p>Sampah organik</p>
+            </div>
+            <div class="col-6">
+              <h4>15%</h4>
+              <p>Tingkat daur ulang</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="bg-success text-white py-5">
+  <div class="container text-center">
+    <h2>Mari bergabung dalam pengelolaan sampah yang lebih baik!</h2>
+    <p class="lead mb-4">
+      Daftar sekarang dan mulai kontribusi untuk lingkungan yang lebih bersih
+    </p>
+    <% if (!user) { %>
+    <a href="/auth/register" class="btn btn-light btn-lg me-2"
+      >Daftar Sekarang</a
+    >
+    <a href="/auth/login" class="btn btn-outline-light btn-lg">Login</a>
+    <% } else { %>
+    <a
+      href="<%= user.role === 'admin' ? '/admin/dashboard' : '/user/dashboard' %>"
+      class="btn btn-light btn-lg"
+      >Ke Dashboard</a
+    >
+    <% } %>
+  </div>
+</section>
